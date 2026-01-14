@@ -139,7 +139,7 @@ ipykernel==6.29.0
 
 ---
 ```
-## 🎯 **PROJECT ARCHITECTURE LAYERS**
+## 🎯 *PROJECT ARCHITECTURE LAYERS*
 
 ┌─────────────────────────────────────────────────┐
 │           API Layer (FastAPI)                    │
