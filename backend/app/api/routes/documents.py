@@ -306,4 +306,36 @@ async def delete_document(
     Raises:
         HTTPException: If deletion fails
     """
-    logger.info(f"Deleting document {
+    logger.info(f"Deleting document {document_id} for user {user_id}")
+    try:
+    # Delete all chunks of this document
+    count = vector_store.delete_documents(
+        filters={
+            "document_id": document_id,
+            "user_id": user_id  # Ensure user owns the document
+        }
+    )
+    
+    if count == 0:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Document {document_id} not found or access denied"
+        )
+    
+    logger.info(f"✅ Deleted document {document_id} ({count} chunks)")
+    
+    return {
+        "message": f"Document deleted successfully",
+        "document_id": document_id,
+        "chunks_deleted": count
+    }
+    
+except HTTPException:
+    raise
+
+except Exception as e:
+    logger.error(f"Error deleting document: {e}", exc_info=True)
+    raise HTTPException(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        detail="Failed to delete document"
+    )
